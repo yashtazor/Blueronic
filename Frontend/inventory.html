@@ -50,41 +50,40 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-
-    <h3>Inventory Management Form</h3>
+    
+    <script>
+        function myFunction() {
+          var x = document.getElementById("container");
+          if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+          } else {
+            x.className = x.className.replace(" w3-show", "");
+          }
+        }
+    </script>
+    <h3>Inventory</h3>
 
 <div class="container">
-  <form method="POST" action="/Users/rohan/Desktop/blueronic/categories.html">
-    <label for="fname">Enter First Symptom</label>
-    <input type="text" id="fname" name="s1" placeholder="Enter First Symptom">
+  <form method="POST" action="">
+    <label for="fname">Enter Weight:</label>
+    <input type="text" id="fname" name="s1" placeholder="Enter Weight">
 
-    <label for="lname">Enter Second Symptom</label>
-    <input type="text" id="lname" name="s2" placeholder="Enter Second Symptom">
-
-    <label for="lname">Enter Third Symptom</label>
-    <input type="text" id="lname" name="s3" placeholder="Enter Third Symptom">
-
-    <label for="lname">Enter Fourth Symptom</label>
-    <input type="text" id="lname" name="s4" placeholder="Enter Fourth Symptom">
-
-    <label for="lname">Enter Fifth Symptom</label>
-    <input type="text" id="lname" name="s5" placeholder="Enter Fifth Symptom">
-
-    <!-- <label for="country">Country</label>
-    <select id="country" name="country">
-      <option value="australia">Australia</option>
-      <option value="canada">Canada</option>
-      <option value="usa">USA</option>
-    </select>
-
-    <label for="subject">Subject</label>
-    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea> -->
-
-    <input type="submit" value="Submit">
-    <!-- <button onclick="window.location.href='/Users/rohan/Desktop/blueronic/categories.html'">Continue</button> -->
-    <!-- <a href="/Users/rohan/Desktop/blueronic/categories.html">Continue</a> -->
+    
+    <!-- <input onclick="toggle()" data-toggle="collapse" data-target="#demo" type="submit" value="Calculate">
   </form>
+  <br><br>
+    <div id="demo" class="collapse" style="margin-top: 30px; height: 100px;">
+      fuck u
+    </div> -->
+
+    <div class="container">
+        <!-- <h2>Simple Collapsible</h2>-->
+        <p>Click on the button to calculate line item quantity.</p>
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
+        <div id="demo" class="collapse">
+          The line item quantity is: 
+        </div>
+      </div>
 </div>
 </body>
 </html>
