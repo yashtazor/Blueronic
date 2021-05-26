@@ -61,31 +61,31 @@
           }
         }
     </script>
-    <h3>Demand Estimation</h3>
+    <h3>Production</h3>
 
 <div class="container">
-  <form method="POST" action="">
+  <form method="POST" action="http://localhost:5000/production">
     <label for="fname">Enter Line Item Quantity:</label>
-    <input type="text" id="fname" name="s1" placeholder="Enter Line Item Quantity:">
+    <input type="text" id="fname" name="quant" placeholder="Line Item Quantity">
+    <label for="fname">Enter Freight Cost in USD:</label>
+    <input type="text" id="fname" name="freight" placeholder="Freight Cost">
+    <label for="fname">Enter Vendor:</label>
+    <input type="text" id="fname" name="vendor" placeholder="Vendor">
 
-    <label for="fname">Enter Line Item Value:</label>
-    <input type="text" id="fname" name="s1" placeholder="Enter Line Item Value:">
-
-    <label for="fname">Enter the number of days for which you want to predict the Line Item Quantity:</label>
-    <input type="text" id="fname" name="s1" placeholder="Enter Weight">
-
-    <!-- <input onclick="toggle()" data-toggle="collapse" data-target="#demo" type="submit" value="Calculate">
+    <input type="submit" name="Submit">
   </form>
-  <br><br>
-    <div id="demo" class="collapse" style="margin-top: 30px; height: 100px;">
-      fuck u
-    </div> -->
+
 
     <div class="container">
         <!-- <h2>Simple Collapsible</h2>-->
-        <p>Click on the button to display the graph.</p>
+        <p>Click on the button to display the available list of vendors or the delivery time</p>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
         <div id="demo" class="collapse">
+          {% if result[0]==0 %}
+          <img src="{{url_for('static',filename='production.png')}}">
+          {% else %}
+          <h4>{{ result[1] }} days</h4>
+          {% endif %}
           <!-- The line item quantity is:  -->
         </div>
       </div>

@@ -61,26 +61,30 @@
           }
         }
     </script>
-    <h3>Production</h3>
+    <h3>Demand Estimation</h3>
 
 <div class="container">
-  <form method="POST" action="">
-    <label for="fname">Enter Line Item Quantity:</label>
-    <input type="text" id="fname" name="s1" placeholder="Enter Line Item Quantity:">
+  <form method="POST" action="http://localhost:5000/demand">
+    <label for="fname">Select demand estimate variable:</label><br>
+    <input type="radio" name="options" id="option1" value="Line Item Quantity"> Line Item Quantity </input><br>
+    <input type="radio" name="options" id="option2" value="Line Item Value"> Line Item Value </input><br>
+    <input type="submit" name="Submit" value="Submit">
 
-    <!-- <input onclick="toggle()" data-toggle="collapse" data-target="#demo" type="submit" value="Calculate">
   </form>
   <br><br>
-    <div id="demo" class="collapse" style="margin-top: 30px; height: 100px;">
-      fuck u
-    </div> -->
 
     <div class="container">
         <!-- <h2>Simple Collapsible</h2>-->
-        <p>Click on the button to display the available list of vendors.</p>
+        <p>Click on the button to display the graph.</p>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
         <div id="demo" class="collapse">
-          <!-- The line item quantity is:  -->
+          {% if result=="Line Item Quantity" %}
+          <img src="{{url_for('static',filename='quantity.png')}}">
+          {% elif result=="Line Item Value" %}
+          <img src="{{url_for('static',filename='value.png')}}">
+          {% else %}
+          <h4>{{ result }}</h4>
+          {% endif %}
         </div>
       </div>
 </div>
