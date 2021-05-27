@@ -1,9 +1,10 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# # Importing Libraries
+# # Importing Libraries & Initializations
 
 # In[1]:
+
 
 # Trivial libraries.
 
@@ -12,9 +13,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import pickle
+import pyrebase
 
 
 # In[2]:
+
 
 # Additional libraries.
 
@@ -27,14 +30,36 @@ import pickle
 # In[ ]:
 
 
+# Initializing Firebase Storage connection.
+
+identifier = {  "apiKey": "AIzaSyBq-IIrvPQj9Q5GThKRoDYp1w3m15hhHsI",
+                "authDomain": "tarp-919f0.firebaseapp.com",
+                "databaseURL": "https://tarp-919f0.firebaseio.com",
+                "projectId": "tarp-919f0",
+                "storageBucket": "tarp-919f0.appspot.com",
+                "messagingSenderId": "1036193468546",
+                "appId": "1:1036193468546:web:70b3d8064e51ddb99a649b",
+                "measurementId": "G-92Y7B1QYX9"
+                }
+
+firebase = pyrebase.initialize_app(identifier)
+storage = firebase.storage()
+
+
+# In[ ]:
+
+
+
 
 
 # # Predicting Meds
 
 # In[3]:
 
+
 # Importing the VAERS report dataset.
-df1 = pd.read_csv("C://Users//Ayanabha//Blueronic//Datasets//2021VAERSData.csv", encoding='latin1')
+storage.child("MainDatasets/2021VAERSData.csv").download("..//Datasets//2021VAERSData.csv")
+df1 = pd.read_csv("..//Datasets//2021VAERSData.csv", encoding='latin1')
 
 # Removing columns with 90% NaN values.
 df1.drop(["RPT_DATE", "V_FUNDBY", "CAGE_MO", "BIRTH_DEFECT", "RECVDATE", "TODAYS_DATE", "SPLTTYPE", "SYMPTOM_TEXT"], axis=1, inplace=True)
@@ -55,11 +80,14 @@ df1.fillna(df1.mode().iloc[0], inplace = True)
 df1
 
 
-# In[3]:
+# In[4]:
+
 
 # Importing the VAERS sympotoms and vaccine datasets.
-df2 = pd.read_csv("C://Users//Ayanabha//Blueronic//Datasets//2021VAERSSYMPTOMS.csv", encoding='latin1')
-df3 = pd.read_csv("C://Users//Ayanabha//Blueronic//Datasets//2021VAERSVAX.csv", encoding='latin1')
+storage.child("MainDatasets/2021VAERSSYMPTOMS.csv").download("..//Datasets//2021VAERSSYMPTOMS.csv")
+df2 = pd.read_csv("..//Datasets//2021VAERSSYMPTOMS.csv", encoding='latin1')
+storage.child("MainDatasets/2021VAERSVAX.csv").download("..//Datasets//2021VAERSVAX.csv")
+df3 = pd.read_csv("..//Datasets//2021VAERSVAX.csv", encoding='latin1')
 
 # Pre-processing both the datasets.
 df2 = df2.dropna(axis = 0)
@@ -70,7 +98,8 @@ df3.drop(["VAX_LOT", "VAX_SITE"], axis=1, inplace=True)
 df3.fillna(df3.mode().iloc[0], inplace = True)
 
 
-# In[4]:
+# In[5]:
+
 
 # Making the final patient dataset.
 # Would be used to predict the medical needs of a particular patient.
@@ -80,18 +109,27 @@ df4 = pd.concat([df1, df2, df3], axis=1, join="inner")
 # Some pre-processing.
 df4.reset_index(inplace = True)
 df4.drop(["DIED","VAX_TYPE","VAX_NAME","VAX_ROUTE","CAGE_YR"], axis=1, inplace=True)
+
+df4.to_csv('..//Datasets//df4_mod.csv')
+storage.child("PartDatasets/df4_mod.csv").put('..//Datasets//df4_mod.csv')
+os.remove('..//Datasets//df4_mod.csv')
+
 df4
 
 
-# In[5]:
+# In[6]:
+
 
 # Importing the supply chain dataset.
 
-df5 = pd.read_csv("C://Users//Ayanabha//Blueronic//Datasets//SCMS_Delivery_History_Dataset.csv")
+storage.child("MainDatasets/SCMS_Delivery_History_Dataset.csv").download("..//Datasets//SCMS_Delivery_History_Dataset.csv")
+df5 = pd.read_csv("..//Datasets//SCMS_Delivery_History_Dataset.csv")
+
 df5
 
 
-# In[6]:
+# In[7]:
+
 
 # Make X & Y for meds prediction.
 
@@ -99,7 +137,8 @@ X = df4[['SYMPTOM1', 'SYMPTOM2', 'SYMPTOM3', 'SYMPTOM4', 'SYMPTOM5']].copy()
 Y = df4[['OTHER_MEDS']].copy()
 
 
-# In[7]:
+# In[8]:
+
 
 X['Mixed'] = X[X.columns[0:]].apply(
     lambda x: ' '.join(x.dropna().astype(str)),
@@ -109,11 +148,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(X['Mixed'])
 
-filename='C:\\Users\\Ayanabha\\Blueronic\\Models\\TFIDF.pkl'
+filename='..//Models//TFIDF.pkl'
 pickle.dump(vectorizer, open(filename, 'wb'))
+storage.child("Models/TFIDF.pkl").put(filename)
+os.remove(filename)
 
 
-# In[8]:
+# In[9]:
+
 
 # Converting X from Sparse Matrix to Pandas Dataframe.
 
@@ -122,11 +164,12 @@ X = pd.DataFrame.sparse.from_spmatrix(X)
 X
 
 
-# In[9]:
+# In[10]:
+
 
 # Using the elbow method to get the optimum number of clusters.
 
-import matplotlib.pyplot as plt
+'''import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
 wcss=[]
@@ -141,18 +184,23 @@ plt.title('The Elbow Method Graph')
 plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
 plt.show()
+'''
 
 
-# In[10]:
+# In[11]:
+
 
 # Perform K-Means Clustering of the data & predict the clusters.
+
+from sklearn.cluster import KMeans
 
 kmeans = KMeans(n_clusters=3, init ='k-means++', max_iter=300, n_init=10,random_state=0 )
 y_kmeans = kmeans.fit_predict(X)
 y_kmeans
 
 
-# In[11]:
+# In[12]:
+
 
 # Counting number of elements in each cluster.
 
@@ -167,7 +215,8 @@ for i in y_kmeans.tolist():
 print(temp)
 
 
-# In[12]:
+# In[13]:
+
 
 # Plotting the clusters.
 
@@ -177,7 +226,8 @@ plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=200,
 plt.show()
 
 
-# In[13]:
+# In[14]:
+
 
 # Appending cluster labels.
 
@@ -185,7 +235,8 @@ df4['Cluster'] = y_kmeans.tolist()
 df4
 
 
-# In[14]:
+# In[15]:
+
 
 # Making a column for meds.
 
@@ -210,20 +261,25 @@ df4['meds']=meds
 df4
 
 
-# In[15]:
+# In[16]:
+
 
 medlist=list(df4['meds'])
-filename='C:\\Users\\Ayanabha\\Blueronic\\Models\\meds.pkl'
+filename='..//Models//meds.pkl'
 pickle.dump(medlist, open(filename, 'wb'))
+storage.child("Models/meds.pkl").put(filename)
+os.remove(filename)
 
 
-# In[16]:
+# In[17]:
+
 
 # Taking user medicine input.
 inp = X.iloc[0, :]
 
 
-# In[17]:
+# In[18]:
+
 
 # KNN algorithm for suggesting meds.
 
@@ -234,15 +290,18 @@ k = 3
 neigh = KNeighborsClassifier(n_neighbors = k)
 neigh.fit(X, y_kmeans.tolist())
 
-filename='C:\\Users\\Ayanabha\\Blueronic\\Models\\knn.pkl'
+filename='..//Models//knn.pkl'
 pickle.dump(neigh, open(filename, 'wb'))
+storage.child("Models/knn.pkl").put(filename)
+os.remove(filename)
 
 distances, indices = neigh.kneighbors([inp])
 
 print(indices)
 
 
-# In[18]:
+# In[19]:
+
 
 # Making a list for predicted meds.
 
@@ -250,9 +309,11 @@ predicted_meds = []
 
 for i in indices.ravel():
     predicted_meds.append(df4['meds'][i])
+print(predicted_meds)
 
 
-# In[19]:
+# In[20]:
+
 
 # Randomly assigning meds and adding them to df5.
 
@@ -261,8 +322,13 @@ import random
 meds = [random.choice(l) for i in range(len(df5))]
 df5['Item Description'] = meds
 
+df5.to_csv('..//Datasets//df5_mod.csv')
+storage.child("PartDatasets/df5_mod.csv").put('..//Datasets//df5_mod.csv')
+os.remove('..//Datasets//df5_mod.csv')
 
-# In[20]:
+
+# In[21]:
+
 
 # Making the weight column numeric.
 
@@ -282,22 +348,25 @@ for i in range(len(x)):
         
 
 
-# In[21]:
+# In[22]:
+
 
 df5['Weight (Kilograms)'] = x
 
 
-# In[22]:
+# In[23]:
+
 
 x2 = set(df4['meds'])
 x2
 
 
-# In[23]:
+# In[24]:
+
 
 # Appending meds suggestion count to a file.
 
-a = open('C://Users//Ayanabha//Blueronic//Medications//Medications.txt', 'a')
+a = open('..//Medications//Medications.txt', 'a')
 
 for i in x2:
     a.write(str(i+'$' + str(random.randint(1, 1000)) + '\n'))
@@ -305,12 +374,13 @@ for i in x2:
 a.close()
 
 
-# In[24]:
+# In[25]:
+
 
 # Storing data from file in a dictionary.
 
 l = dict()
-a = open('C://Users//Ayanabha//Blueronic//Medications//Medications.txt', 'r')
+a = open('..//Medications//Medications.txt', 'r')
 
 Lines = a.readlines()
  
@@ -323,7 +393,8 @@ a.close()
     
 
 
-# In[25]:
+# In[26]:
+
 
 # Making an item description column in df5.
 
@@ -337,6 +408,11 @@ for i in df5['Item Description']:
 
 df5['Suggest count'] = x1
 df5['Suggest count'].fillna(df5['Suggest count'].median(), inplace=True)
+
+df5.to_csv('..//Datasets//df_inventory.csv')
+storage.child("PartDatasets/df_inventory.csv").put('..//Datasets//df_inventory.csv')
+os.remove('..//Datasets//df_inventory.csv')
+
 df5
 
 
@@ -345,16 +421,19 @@ df5
 
 
 
+
 # # Inventory Management Model
 
-# In[26]:
+# In[27]:
+
 
 # TODOs.
 
 # 1. Subset the rows corresponding to predicted meds to be used as data for MLR. 
 
 
-# In[27]:
+# In[28]:
+
 
 # Multiple linear regression.
 
@@ -366,36 +445,47 @@ y = df5['Line Item Quantity']
 regr = linear_model.LinearRegression()
 regr.fit(X, y)
 
+filename='..//Models//multi_regr.pkl'
+pickle.dump(regr, open(filename, 'wb'))
+storage.child("Models/multi_regr.pkl").put(filename)
+os.remove(filename)
 
-# In[28]:
+
+# In[29]:
+
 
 x_pred = [[float(df5['Weight (Kilograms)'][0]), float(df5['Suggest count'][0])]]
 regr.predict(x_pred)
 
 
-# In[29]:
+# In[30]:
+
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 
-# In[30]:
+# In[31]:
+
 
 regr = linear_model.LinearRegression()
 regr.fit(X_train, y_train)
 
 
-# In[31]:
+# In[32]:
+
 
 y_pred = regr.predict(X_test)
 
 
-# In[32]:
+# In[33]:
+
 
 print(y_pred)
 
 
-# In[33]:
+# In[34]:
+
 
 from sklearn.metrics import r2_score, mean_absolute_error
 r2_score(y_test, y_pred)
@@ -408,14 +498,17 @@ mean_absolute_error(y_test, y_pred)
 
 
 
+
 # # Demand Estimation
 
-# In[ ]:
-
-predicted_meds = pickle.load(open('C:\\Users\\Ayanabha\\Blueronic\\Models\\predmed.pkl','rb'))
+# In[35]:
 
 
-# In[34]:
+predicted_meds = pickle.load(open('..//Models//predmed.pkl','rb'))
+
+
+# In[36]:
+
 
 # Making a new dataframe (df6) of predicted meds instances.
 
@@ -439,7 +532,8 @@ df6['Line Item Value']=l3
 df6
 
 
-# In[35]:
+# In[37]:
+
 
 # Preprocessing the dataset (df6) for 'Demand Estimation'.
 
@@ -450,70 +544,75 @@ df6.drop(['index'],axis=1,inplace=True)
 df6
 
 
-# In[36]:
+# In[38]:
+
 
 # ARIMA forecasting of line item quantity and line item value.
 
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.arima_model import ARIMA
-
-if(df6.shape[0]>=3):
  
-    casemodel = ARIMA(df6['Line Item Quantity'], order=(1, 0, 0))
-    casemodel_fit = casemodel.fit(disp=0)
+casemodel = ARIMA(df6['Line Item Quantity'], order=(1, 0, 0))
+casemodel_fit = casemodel.fit(disp=0)
 
 
-    # In[37]:
-
-    # Forecasting line item quantity using ARIMA
-    Y_forecast_arima = casemodel_fit.forecast(steps = df6.shape[0])[0]
-    Y_forecast_arima
+# In[39]:
 
 
-    # In[38]:
-
-    # Plotting the original and forecasted line item quantity.
-
-    plt.plot(df6.index,df6['Line Item Quantity'])
-    plt.plot(df6.index,list(Y_forecast_arima),color='red')
-    plt.show()
+# Forecasting line item quantity using ARIMA
+Y_forecast_arima = casemodel_fit.forecast(steps = df6.shape[0])[0]
+Y_forecast_arima
 
 
-    # In[39]:
-
-    # ARIMA forecasting of line item value.
-
-    casemodel = ARIMA(df6['Line Item Value'], order=(1, 0, 0))
-    casemodel_fit = casemodel.fit(disp=0)
-    Y_forecast_arima = casemodel_fit.forecast(steps = df6.shape[0])[0]
-    Y_forecast_arima
+# In[40]:
 
 
-    # In[40]:
+# Plotting the original and forecasted line item quantity.
 
-    # Plotting the original and forecasted line item value.
+plt.plot(df6.index,df6['Line Item Quantity'])
+plt.plot(df6.index,list(Y_forecast_arima),color='red')
+plt.show()
 
-    plt.plot(df6.index,df6['Line Item Value'])
-    plt.plot(df6.index,list(Y_forecast_arima),color='red')
-    plt.show()
-else:
-    print('Model error')
+
+# In[41]:
+
+
+# ARIMA forecasting of line item value.
+
+casemodel = ARIMA(df6['Line Item Value'], order=(1, 0, 0))
+casemodel_fit = casemodel.fit(disp=0)
+Y_forecast_arima = casemodel_fit.forecast(steps = df6.shape[0])[0]
+Y_forecast_arima
+
+
+# In[42]:
+
+
+# Plotting the original and forecasted line item value.
+
+plt.plot(df6.index,df6['Line Item Value'])
+plt.plot(df6.index,list(Y_forecast_arima),color='red')
+plt.show()
+
 
 # In[ ]:
 
 
 
 
+
 # # Production
 
-# In[41]:
+# In[43]:
+
 
 # Making a copy of df5.
 
 df5_copy = df5.copy(deep=True)
 
 
-# In[42]:
+# In[44]:
+
 
 # Preprocessing dataframe (df5) for production model.
 
@@ -526,7 +625,8 @@ df5['Delivery Time'] = k.dt.days
 df5
 
 
-# In[43]:
+# In[45]:
+
 
 # Making X and y from required inputs and labels.
 
@@ -534,12 +634,14 @@ X = df5[['Line Item Quantity', 'Freight Cost (USD)', 'Vendor']]
 y = df5[['Delivery Time']]
 
 
-# In[44]:
+# In[46]:
+
 
 X
 
 
-# In[45]:
+# In[47]:
+
 
 from sklearn.preprocessing import LabelEncoder
 
@@ -547,33 +649,52 @@ le = LabelEncoder()
 
 X['Vendor'] = le.fit_transform(X['Vendor'])
 
+filename='..//Models//vendor_coder.pkl'
+pickle.dump(le, open(filename, 'wb'))
+storage.child("Models/vendor_coder.pkl").put(filename)
+os.remove(filename)
+
 X
 
 
-# In[46]:
+# In[48]:
+
 
 X['new'] = pd.to_numeric(X['Freight Cost (USD)'].astype(str).str.replace(',',''), errors='coerce').fillna(np.nan).astype(float)
 X['new'].fillna(X['new'].mean(), inplace = True)
 X['Freight Cost (USD)'] = X['new']
 X.drop(columns=['new'], inplace = True)
 X['meds'] = df5['Item Description']
+
+X.to_csv('..//Datasets//df_demand.csv')
+storage.child("PartDatasets/df_demand.csv").put('..//Datasets//df_demand.csv')
+os.remove('..//Datasets//df_demand.csv')
+
+
 X
 
 
-# In[47]:
+# In[49]:
+
 
 # Random Forest Regression for predicting delivery time.
 
 from sklearn.ensemble import RandomForestClassifier
 
-num_trees = 5
+num_trees = 2
 max_features = 3
 
-model = RandomForestClassifier(n_estimators = num_trees,max_features=max_features)
+model = RandomForestClassifier(n_estimators = num_trees)
 model.fit(X.iloc[:, :3], y)
 
+filename='..//Models//random_forest.pkl'
+pickle.dump(model, open(filename, 'wb'))
+storage.child("Models/random_forest.pkl").put(filename)
+os.remove(filename)
 
-# In[48]:
+
+# In[50]:
+
 
 # Making X_test for our model.
 
@@ -598,7 +719,8 @@ X_test['Vendor'] = l3
 X_test
 
 
-# In[49]:
+# In[51]:
+
 
 # Predicting the labels for vendors with least delivery time.
 
@@ -606,7 +728,8 @@ y_pred = model.predict(X_test)
 y_pred
 
 
-# In[50]:
+# In[52]:
+
 
 # Inverse transformaing our labels to actual vendors.
 
@@ -614,7 +737,8 @@ vendors = list(le.inverse_transform(X_test['Vendor']))
 vendors
 
 
-# In[51]:
+# In[53]:
+
 
 # Making our final output dataframe. (Sorted in ascending order of delivery time in days)
 
@@ -631,7 +755,8 @@ df_vendor.drop(columns=['index'], axis = 1, inplace = True)
 df_vendor
 
 
-# In[52]:
+# In[54]:
+
 
 # Visualizing the output.
 
@@ -650,9 +775,11 @@ sns.catplot(ax=ax, x="Medication", y="Days", hue="Vendor", kind="bar", data=df_v
 
 
 
+
 # # Supply Management
 
-# In[53]:
+# In[55]:
+
 
 # Cleaning Freight Cost (USD) column in df5.
 
@@ -661,7 +788,8 @@ df5['Freight Cost (USD)'].fillna(df5['Freight Cost (USD)'].mean(), inplace = Tru
 df5
 
 
-# In[54]:
+# In[56]:
+
 
 # Label encoding Vendor and Shipment Mode.
 
@@ -672,10 +800,17 @@ le2 = LabelEncoder()
 
 df5['Vendor'] = le1.fit_transform(df5['Vendor'])
 df5['Shipment Mode'] = le2.fit_transform(df5['Shipment Mode'].astype(str))
+
+filename='..//Models//vendor_label.pkl'
+pickle.dump(le1, open(filename, 'wb'))
+storage.child("Models/vendor_label.pkl").put(filename)
+os.remove(filename)
+
 df5
 
 
-# In[55]:
+# In[57]:
+
 
 # Calculating and adding Shipment Cost column to df5.
 
@@ -685,7 +820,8 @@ df5['Shipment Cost'].fillna(df5['Shipment Cost'].mean(),inplace=True)
 df5
 
 
-# In[56]:
+# In[58]:
+
 
 # Getting the latitudes and longitudes of all manufacturing sites in df5.
 
@@ -704,7 +840,8 @@ for i in sites:
 geocode
 
 
-# In[57]:
+# In[59]:
+
 
 # Appending latitude and longitude of vendors to df5.
 
@@ -724,7 +861,8 @@ df5['long'].fillna(df5['long'].mean(), inplace = True)
 df5
 
 
-# In[58]:
+# In[60]:
+
 
 # DBSCAN for spatial data (manufacturing sites).
 
@@ -735,7 +873,8 @@ db_clustering=DBSCAN().fit(X)
 set(list(db_clustering.labels_))
 
 
-# In[59]:
+# In[61]:
+
 
 # Plotting the spatial data (manufacturing sites).
 
@@ -744,7 +883,8 @@ plt.scatter(X.iloc[:, 0], X.iloc[:, 1], c=db_clustering.labels_, cmap='rainbow',
 plt.show()
 
 
-# In[60]:
+# In[62]:
+
 
 # Adding the cluster assignments as a column to df5.
 
@@ -752,15 +892,21 @@ df5['db_cluster']=list(db_clustering.labels_)
 df5
 
 
-# In[61]:
+# In[63]:
+
 
 # Appending a supply score column to df5.
 
 df5['Supply score'] = df5['Shipment Mode'] + df5['Vendor'] + df5['Freight Cost (USD)'] + df5['Shipment Cost'] + df5['db_cluster']
+df5.to_csv('..//Datasets//df_supply.csv')
+storage.child("PartDatasets/df_supply.csv").put('..//Datasets//df_supply.csv')
+os.remove('..//Datasets//df_supply.csv')
+
 df5
 
 
-# In[62]:
+# In[64]:
+
 
 # Train-test split for neural network.
 
@@ -768,15 +914,21 @@ X = df5[['Shipment Mode','Vendor','Freight Cost (USD)','Shipment Cost','db_clust
 y = df5[['Supply score']]
 
 
-# In[63]:
+# In[65]:
+
 
 # Regressive Neural Network for supply score.
 
 from sklearn.neural_network import MLPRegressor
 regr = MLPRegressor(random_state=1, max_iter=500).fit(X, y)
+filename='..//Models//neural_regr.pkl'
+pickle.dump(regr, open(filename, 'wb'))
+storage.child("Models/neural_regr.pkl").put(filename)
+os.remove(filename)
 
 
-# In[64]:
+# In[66]:
+
 
 # Making an input dataframe X according to predicted meds.
 
@@ -803,7 +955,8 @@ X_test['db_cluster'] = l5
 X_test
 
 
-# In[65]:
+# In[67]:
+
 
 # Make the predictions for supply score.
 
@@ -815,15 +968,10 @@ for i in range(X_test.shape[0]):
 neural_pred
 
 
-# In[66]:
+# In[68]:
+
 
 # Inverse transform and print the best supplier.
 
 best_vendor_index = neural_pred.index(min(neural_pred))
 le1.inverse_transform(X_test['Vendor'].astype(int)).tolist()[best_vendor_index]
-
-
-# In[ ]:
-
-
-

@@ -1,12 +1,33 @@
 # # Demand Estimation
 
+
 # In[ ]:
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import pyrebase
 
-predicted_meds = pickle.load(open('C:\\Users\\Ayanabha\\Blueronic\\Models\\predmed.pkl','rb'))
-df5=pd.read_csv('C:\\Users\\Ayanabha\\Blueronic\\Datasets\\df5_mod.csv')
+
+# Firebase storage initialization.
+identifier = {  "apiKey": "AIzaSyBq-IIrvPQj9Q5GThKRoDYp1w3m15hhHsI",
+                "authDomain": "tarp-919f0.firebaseapp.com",
+                "databaseURL": "https://tarp-919f0.firebaseio.com",
+                "projectId": "tarp-919f0",
+                "storageBucket": "tarp-919f0.appspot.com",
+                "messagingSenderId": "1036193468546",
+                "appId": "1:1036193468546:web:70b3d8064e51ddb99a649b",
+                "measurementId": "G-92Y7B1QYX9"
+                }
+
+firebase = pyrebase.initialize_app(identifier)
+storage = firebase.storage()
+
+
+storage.child("Models/predmed.pkl").download('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\predmed.pkl')
+predicted_meds = pickle.load(open('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\predmed.pkl', 'rb'))
+storage.child("PartDatasets/df5_mod.csv").download('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Datasets\\df5_mod.csv')
+df5=pd.read_csv('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Datasets\\df5_mod.csv')
+
 
 # In[34]:
 
@@ -71,7 +92,8 @@ if(df6.shape[0]>=3):
     plt.plot(df6.index,list(Y_forecast_arima),color='red')
     plt.xlabel('Day')
     plt.ylabel('Line Item Quantity')
-    plt.savefig('C:\\Users\\Ayanabha\\Blueronic\\static\\quantity.png')
+    plt.savefig('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\static\\quantity.png')
+    plt.clf()    
 
 
     # In[39]:
@@ -92,9 +114,15 @@ if(df6.shape[0]>=3):
     plt.plot(df6.index,list(Y_forecast_arima),color='red')
     plt.xlabel('Day')
     plt.ylabel('Line Item Value')
-    plt.savefig('C:\\Users\\Ayanabha\\Blueronic\\static\\value.png')
+    plt.savefig('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\static\\value.png')
+    plt.clf()
+        
     print('In Model')
-    pickle.dump('Model Success', open('C:\\Users\\Ayanabha\\Blueronic\\Models\\error.pkl', 'wb'))
+    pickle.dump('Model Success', open('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\error.pkl', 'wb'))
+    storage.child("Models/error.pkl").put('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\error.pkl')
+    
 else:
-    print('In Model')
-    pickle.dump('Model Error', open('C:\\Users\\Ayanabha\\Blueronic\\Models\\error.pkl', 'wb'))
+    
+    print('Not In Model')
+    pickle.dump('Model Error', open('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\error.pkl', 'wb'))
+    storage.child("Models/error.pkl").put('C:\\Users\\YASH\\Documents\\GitHub\\Blueronic\\Models\\error.pkl')
