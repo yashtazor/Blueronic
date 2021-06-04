@@ -43,7 +43,7 @@
         }
     </style>
   </head>
-  <body>
+  <body style="background-color: grey;">
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -52,27 +52,27 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 
-    <h3>Categories</h3>
+    <h3 style="text-align: center; padding-top: 20px; padding-bottom: 40px;">Categories</h3>
 
 <div class="container">
   <form method="POST">
     
     <h2>The list of medications:</h2>
 
-    <ol>
-      <li>{{result[0]}}</li>
-      <li>{{result[1]}}</li>
-      <li>{{result[2]}}</li>
-    </ol>  
+    <ul>
+      <li>Coffee</li>
+      <li>Tea</li>
+      <li>Milk</li>
+    </ul>  
+   
+    <h2 style="padding-top: 50px;">Select a Category from below:</h2>
 
-    <h2>Select a Category from below:</h2>
-
-    <ol>
-      <li><a href="http://localhost:5000/inventory">Inventory</a></li>
-      <li><a href="http://localhost:5000/demand">Demand Estimation</a></li>
-      <li><a href="http://localhost:5000/supply">Supply</a></li>
-      <li><a href="http://localhost:5000/production">Production</a></li>
-    </ol> 
+    <ul>
+      <li><a href="/Users/rohan/Desktop/blueronic/inventory.html">Inventory</a></li>
+      <li><a href="/Users/rohan/Desktop/blueronic/demand.html">Demand Estimation</a></li>
+      <li><a href="/Users/rohan/Desktop/blueronic/supply.html">Supply</a></li>
+      <li><a href="/Users/rohan/Desktop/blueronic/production.html">Production</a></li>
+    </ul> 
     <!-- <input type="submit" value="Submit"> -->
     </form>
 </div>
