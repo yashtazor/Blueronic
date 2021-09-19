@@ -76,4 +76,12 @@ The frontend only consists of the GUI. The GUI is developed in such a way so as 
 * Frontend
   * HTML/CSS
 
+## How to run?
+
+* Clone this repository and navigate to the project directory with Anaconda Prompt or Terminal.
+* Create an Anaconda Virtual Environment by running **``conda env create -f env.yml``**.
+* Navigate to the **Scripts** folder and run **``python TARPModels.py``**. This has to be done only once.
+* Navigate to the root directory and run **``python app.py``**.
+* Access the app on localhost at port 5000.
+
 <b> <p align = "center"> Created by Ayanabha Jana, Yash Dekate, Alpanshu Kataria, and Rohan Dastidar. </p> </b>
