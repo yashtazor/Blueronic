@@ -76,3 +76,4 @@ The frontend only consists of the GUI. The GUI is developed in such a way so as 
 * Frontend
   * HTML/CSS
 
+<b> <p align = "center"> Created by Ayanabha Jana, Yash Dekate, Alpanshu Kataria, and Rohan Dastidar. </p> </b>
