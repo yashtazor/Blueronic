@@ -55,7 +55,7 @@ Blueronic is a Full-Stack application for optimizing the Supply Chain aspects of
 
 #### 1. Database 
  
-The database would act as our central store of data not only for the machine learning part but also the full-stack part. The database would be originally storing all four of our datasets, viz., 2021VAERSDATA, 2021VAERSSYMPTOMS, 2021VAERSVAX and the Supply Chain datasets. This module would be responsible for providing all these datasets to the machine learning module to preprocess. The optimized supply-chain output from the machine learning module would then be returned to it and the output would then be stored there in some suitable form for the frontend which would be decided later on. Since the output is now available for the frontend, it can be utilized as the backend for the frontend part to which the output can easily be routed in the form of a ‘RESPONSE’ on a user ‘REQUEST’ from the front-end.
+The database would act as our central store of data not only for the machine learning part but also the full-stack part. The database would be originally storing all four of our datasets, viz., 2021VAERSDATA, 2021VAERSSYMPTOMS, 2021VAERSVAX and the Supply Chain datasets. This module would be responsible for providing all these datasets to the machine learning module to pre-process. The optimized supply-chain output from the machine learning module would then be returned to it and the output would then be stored there in some suitable form for the frontend which would be decided later on. Since the output is now available for the frontend, it can be utilized as the backend for the frontend part to which the output can easily be routed in the form of a ‘RESPONSE’ on a user ‘REQUEST’ from the front-end.
 
 #### 2. Server 
  
@@ -63,7 +63,7 @@ This server is mainly set up to handle the routes through which the communicatio
 
 ### Frontend Module
 
-The frontend only consists of the GUI. The GUI is developed in such a way so as to provide the users with an intuitive and user-friendly interface. Users will find it very convenient to interact with our application and get answers pertaining to all of their queries namely, availability, recommendations of numerous medicines in case the patient experiences certain side-effects after consumption of vaccine. As a consequence of this, the GUI will enhance the efficiency and ease of use for the underlying logical design of the application. The visual language introduced in the design is well-tailored to the functionalities, keeping in mind the principles of user-centered design. 
+The frontend only consists of the GUI. The GUI is developed in such a way so as to provide the users with an intuitive and user-friendly interface. Users will find it very convenient to interact with our application and get answers pertaining to all of their queries namely, availability, recommendations of numerous medicines in case the patient experiences certain side-effects after consumption of vaccine. As a consequence of this, the GUI will enhance the efficiency and ease of use for the underlying logical design of the application. The visual language introduced in the design is well-tailored to the functionalities, keeping in mind the principles of user-centred design. 
 
 
 ## Module-Wise Technology Stack
@@ -80,6 +80,7 @@ The frontend only consists of the GUI. The GUI is developed in such a way so as 
 
 * Clone this repository and navigate to the project directory with Anaconda Prompt or Terminal.
 * Create an Anaconda Virtual Environment by running **``conda env create -f env.yml``**.
+* Activate the Virtual Environment by running **``conda activate TARP``**.
 * Navigate to the **Scripts** folder and run **``python TARPModels.py``**. This has to be done only once.
 * Navigate to the root directory and run **``python app.py``**.
 * Access the app on localhost at port 5000.
