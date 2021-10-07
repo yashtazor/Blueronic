@@ -10,9 +10,7 @@ Blueronic is a Full-Stack application for optimizing the Supply Chain aspects of
 
 ## Architectural Diagram and Modules
 
-<br>
-
-| ![TARP Achitecture](https://user-images.githubusercontent.com/42903859/135399944-929fbe20-727f-4d18-87c7-f0f76ccb5b38.png) |
+| ![TARP Architecture Diagram](https://user-images.githubusercontent.com/42903859/136411527-7a097ecb-cfa4-472c-834a-8d73f20657ea.png) |
 | - |
 
 ### Machine Learning Module
