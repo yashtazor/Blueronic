@@ -112,7 +112,7 @@ df4.drop(["DIED","VAX_TYPE","VAX_NAME","VAX_ROUTE","CAGE_YR"], axis=1, inplace=T
 
 df4.to_csv('..//Datasets//df4_mod.csv')
 storage.child("PartDatasets/df4_mod.csv").put('..//Datasets//df4_mod.csv')
-os.remove('..//Datasets//df4_mod.csv')
+#os.remove('..//Datasets//df4_mod.csv')
 
 df4
 
@@ -151,7 +151,7 @@ X = vectorizer.fit_transform(X['Mixed'])
 filename='..//Models//TFIDF.pkl'
 pickle.dump(vectorizer, open(filename, 'wb'))
 storage.child("Models/TFIDF.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 
 # In[9]:
@@ -268,7 +268,7 @@ medlist=list(df4['meds'])
 filename='..//Models//meds.pkl'
 pickle.dump(medlist, open(filename, 'wb'))
 storage.child("Models/meds.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 
 # In[17]:
@@ -293,7 +293,7 @@ neigh.fit(X, y_kmeans.tolist())
 filename='..//Models//knn.pkl'
 pickle.dump(neigh, open(filename, 'wb'))
 storage.child("Models/knn.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 distances, indices = neigh.kneighbors([inp])
 
@@ -324,7 +324,7 @@ df5['Item Description'] = meds
 
 df5.to_csv('..//Datasets//df5_mod.csv')
 storage.child("PartDatasets/df5_mod.csv").put('..//Datasets//df5_mod.csv')
-os.remove('..//Datasets//df5_mod.csv')
+#os.remove('..//Datasets//df5_mod.csv')
 
 
 # In[21]:
@@ -411,7 +411,7 @@ df5['Suggest count'].fillna(df5['Suggest count'].median(), inplace=True)
 
 df5.to_csv('..//Datasets//df_inventory.csv')
 storage.child("PartDatasets/df_inventory.csv").put('..//Datasets//df_inventory.csv')
-os.remove('..//Datasets//df_inventory.csv')
+#os.remove('..//Datasets//df_inventory.csv')
 
 df5
 
@@ -448,7 +448,7 @@ regr.fit(X, y)
 filename='..//Models//multi_regr.pkl'
 pickle.dump(regr, open(filename, 'wb'))
 storage.child("Models/multi_regr.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 
 # In[29]:
@@ -652,7 +652,7 @@ X['Vendor'] = le.fit_transform(X['Vendor'])
 filename='..//Models//vendor_coder.pkl'
 pickle.dump(le, open(filename, 'wb'))
 storage.child("Models/vendor_coder.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 X
 
@@ -668,7 +668,7 @@ X['meds'] = df5['Item Description']
 
 X.to_csv('..//Datasets//df_demand.csv')
 storage.child("PartDatasets/df_demand.csv").put('..//Datasets//df_demand.csv')
-os.remove('..//Datasets//df_demand.csv')
+#os.remove('..//Datasets//df_demand.csv')
 
 
 X
@@ -690,7 +690,7 @@ model.fit(X.iloc[:, :3], y)
 filename='..//Models//random_forest.pkl'
 pickle.dump(model, open(filename, 'wb'))
 storage.child("Models/random_forest.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 
 # In[50]:
@@ -804,7 +804,7 @@ df5['Shipment Mode'] = le2.fit_transform(df5['Shipment Mode'].astype(str))
 filename='..//Models//vendor_label.pkl'
 pickle.dump(le1, open(filename, 'wb'))
 storage.child("Models/vendor_label.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 df5
 
@@ -900,7 +900,7 @@ df5
 df5['Supply score'] = df5['Shipment Mode'] + df5['Vendor'] + df5['Freight Cost (USD)'] + df5['Shipment Cost'] + df5['db_cluster']
 df5.to_csv('..//Datasets//df_supply.csv')
 storage.child("PartDatasets/df_supply.csv").put('..//Datasets//df_supply.csv')
-os.remove('..//Datasets//df_supply.csv')
+#os.remove('..//Datasets//df_supply.csv')
 
 df5
 
@@ -924,7 +924,7 @@ regr = MLPRegressor(random_state=1, max_iter=500).fit(X, y)
 filename='..//Models//neural_regr.pkl'
 pickle.dump(regr, open(filename, 'wb'))
 storage.child("Models/neural_regr.pkl").put(filename)
-os.remove(filename)
+#os.remove(filename)
 
 
 # In[66]:
