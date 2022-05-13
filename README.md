@@ -86,7 +86,10 @@ The frontend only consists of the GUI. The GUI is developed in such a way so as 
 * Navigate to the root directory and run **``python app.py``**.
 * Access the app on localhost at port 5000.
 
-<b> <p align = "center"> Created by Ayanabha Jana, Yash Dekate, Alpanshu Kataria, and Rohan Dastidar. </p> </b>
+## Citation
 
-#### Cite the following paper when referring this project for academic endeavours
+Cite our paper if you're referring this project for your academic endeavours.
+
 Jana, A., Dekate, Y., Kataria, A., Dastidar, R., Phamila Y, A. V. and Geetha, S. (2021). <i>Healthcare Supply Chain Optimization using Machine Learning Techniques</i>, International Journal of Scientific Research in Engineering and Management, Vol. 5, No. 11
+
+<b> <p align = "center"> Created by Ayanabha Jana, Yash Dekate, Alpanshu Kataria, and Rohan Dastidar. </p> </b>
